@@ -1,0 +1,90 @@
+﻿@model HMS.Areas.Dashboard.Models.UsersListingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="row">
+    <div class="col col-lg-12">
+        <h3>Users Information</h3>
+        @if (Model != null && Model.Users != null && Model.Users.Count() > 0)
+        {
+            if (Model.Pager.CurPage == Model.Pager.EndPage)
+            {
+                <span>
+                    Showing @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @Model.Pager.TotalReco of @Model.Pager.TotalReco entries
+                </span>
+            }
+            else
+            {
+                <span>
+                    Showing  @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @(Model.Pager.RecoSize * Model.Pager.CurPage) of @Model.Pager.TotalReco entries
+                </span>
+            }
+        }
+        <label style="float:right;">
+            Show
+            <select id="iRecord" onchange="if (this.value) window.location = 'Users?iReco='+this.value">
+                <option value="5" selected>05</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+            </select>
+            Entries
+        </label>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col col-lg-12">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" name="sUser" value="@Model.SrcUser" placeholder="Search Users" />
+                @if (Model.Roles != null && Model.Roles.Count() > 0)
+                {
+                    <select class="form-control" name="sRole">
+                        <option value="">Select Role</option>
+                        @foreach (var oRole in Model.Roles)
+                        {
+                            <option value="@oRole.Id" @(oRole.Id == Model.RoleId ? "selected" : string.Empty)>@oRole.Name</option>
+                        }
+                    </select>
+                }
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Users")">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </a>
+                    <a data-href="@Url.Action("Action", "Users")" class="btn-data btn btn-outline-success" data-toggle="modal" data-target="#actionModal">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-12">
+        @{ Html.RenderPartial("_Listing", Model); }
+        <hr />
+    </div>
+</div>
+
+<!-- Action Modal -->
+<div id="actionModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+<!-- Action Script -->
+<script>
+    $(".btn-data").click(function () {
+        $.ajax({
+            url: $(this).attr("data-href"),
+        }).done(function (resp) {
+            $("#actionModal .modal-dialog").html(resp);
+        });
+    });
+</script>

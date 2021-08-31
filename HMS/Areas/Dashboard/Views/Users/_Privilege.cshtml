@@ -1,0 +1,100 @@
+﻿@model HMS.Areas.Dashboard.Models.UserRolesModel
+
+@if (Model != null)
+{
+    <div class="modal-content">
+        <div class="modal-header" style="background-color : lightsteelblue; height : 60px;">
+            <h5 class="modal-title">
+                <span>User Roles</span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @*------------------ Current User Roles ------------------*@
+            @if (Model.UserRoles != null && Model.UserRoles.Count() > 0)
+            {
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Current User Roles</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var oRole in Model.UserRoles)
+                        {
+                            <tr>
+                                <td style="padding: .02rem .3rem;" colspan="2">@oRole.Name</td>
+                                <td style="padding: .02rem .2rem;">
+                                    <button data-href="@Url.Action("Privilege", "Users", new { userId = Model.UserId, roleId = oRole.Id, isDelete = true })" type="button" class="btnRole btn btn-danger">
+                                        <i class="fas fa-user-times mr-1"></i>Dismiss
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    This user has no roles.
+                </div>
+            }
+            <hr />
+            @*---------------- Assign New Roles ---------------*@
+            @if (Model.Roles != null && Model.Roles.Count() > 0)
+            {
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Assign New Roles</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var oRole in Model.Roles)
+                        {
+                            <tr>
+                                <td style="padding: .02rem .3rem;" colspan="2">@oRole.Name</td>
+                                <td style="padding: .02rem .5rem;">
+                                    <button data-href="@Url.Action("Privilege", "Users", new { userId = Model.UserId, roleId = oRole.Id })" type="button" class="btnRole btn btn-success">
+                                        <i class="fas fa-user-check mr-1"></i>Assign
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+        <div class="modal-footer" style="background-color : lavender; height : 50px;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                <i class="fas fa-times mr-2"></i>Close
+            </button>
+        </div>
+    </div>
+}
+
+<script>
+	$(".btnRole").click(function () {
+		$.ajax({
+			url: $(this).attr("data-href"),
+			type: "POST"
+		}).done(function (resp) {
+                if (resp.Success)
+			    {
+				    $.ajax({
+					    url: "@Url.Action("Privilege", "Users", new { ID = Model.UserId })",
+				    })
+				    .done(function (res) {
+                        $("#actionModal .modal-dialog").html(res);
+				    });
+			    }
+			    else alert(resp.Message);
+		});
+	});
+</script>
+

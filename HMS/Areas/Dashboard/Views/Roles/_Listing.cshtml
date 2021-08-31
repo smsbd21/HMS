@@ -1,0 +1,80 @@
+﻿@model HMS.Areas.Dashboard.Models.RolesListingModel
+
+@if (Model != null && Model.Roles != null && Model.Roles.Count() > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="400px">Role Id</th>
+                <th scope="col" width="240px">Role Name</th>
+                <th scope="col" width="200px">Total Users</th>
+                <th scope="col" width="140px">Action Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var oRole in Model.Roles)
+            {
+                <tr>
+                    <td style="padding: .02rem .2rem;">@oRole.Id</td>
+                    <td style="padding: .02rem .2rem;">@oRole.Name</td>
+                    <td style="padding: .02rem .2rem;">
+                        <a href="@Url.Action("Index", "Users", new { sRole = oRole.Id })" target="_blank">@oRole.Users.Count</a>
+                    </td>
+                    <td>
+                        <button data-href="@Url.Action("Action", "Roles", new { ID = oRole.Id })" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-primary" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-pen mr-1"></i>Edit
+                        </button>
+                        <button data-href="@Url.Action("Delete", "Roles", new { ID = oRole.Id })" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-danger" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-trash-alt mr-1"></i>Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- ASP.NET MVC - Pagination -->
+    if (Model.Pager.EndPage > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @if (Model.Pager.CurPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Roles", new { sRole = Model.SrcRole })">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Roles", new { sRole = Model.SrcRole, iCurPage = Model.Pager.CurPage - 1 })">
+                            <i class="fas fa-angle-double-left" title="Previous"></i>
+                        </a>
+                    </li>
+                }
+
+                @for (var iPage = Model.Pager.StartPage; iPage <= Model.Pager.EndPage; iPage++)
+                {
+                    <li class="page-item @(iPage == Model.Pager.CurPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Roles", new { sRole = Model.SrcRole, iCurPage = iPage })"> @iPage</a>
+                    </li>
+                }
+
+                @if (Model.Pager.CurPage < Model.Pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Roles", new { sRole = Model.SrcRole, iCurPage = Model.Pager.CurPage + 1 })">
+                            @*<span class="sr-only">Next</span>*@
+                            <i class="fas fa-angle-double-right" title="Next"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Roles", new { sRole = Model.SrcRole, iCurPage = Model.Pager.TotalPages })">Last</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        Sorry! No records exist.
+    </div>
+}

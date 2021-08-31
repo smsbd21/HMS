@@ -1,0 +1,81 @@
+﻿@model HMS.Areas.Dashboard.Models.AccomodationsListingModel
+
+@if (Model != null && Model.Accomodations != null && Model.Accomodations.Count() > 0)
+{
+    <!-- Items being paginated -->
+    <table class="table table-striped" style="border: 1px solid rgba(221,221,221,0.78);">
+        <thead>
+            <tr>
+                <th scope="col" width="200px">Accomodation</th>
+                <th scope="col" width="200px">Package Name</th>
+                <th scope="col" width="480px">Description</th>
+                <th scope="col" width="140px">Action Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var oAcom in Model.Accomodations)
+            {
+                <tr style="margin-left:auto;">
+                    <td style="padding: .02rem .2rem;">@oAcom.AccName</td>
+                    <td>
+                        @if (oAcom.AccomodationPackage != null) {@oAcom.AccomodationPackage.PackageName}
+                    </td>
+                    <td>@oAcom.Description</td>
+                    <td>
+                        <button data-href="@Url.Action("Action", "Accomodations", new { ID=oAcom.ID})" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-primary" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-pen mr-1"></i>Edit
+                        </button>
+                        <button data-href="@Url.Action("Delete", "Accomodations", new { ID=oAcom.ID})" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-danger" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-trash-alt mr-1"></i>Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!-- ASP.NET MVC - Pagination -->
+    if (Model.Pager.EndPage > 1)
+    {
+        <nav>
+            <ul class="pagination">
+                @if (Model.Pager.CurPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Accomodations", new { sAcom = Model.SrcAcom, iPack=Model.AccPackId })">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Accomodations", new { sAcom = Model.SrcAcom, iPack=Model.AccPackId, iCurPage = Model.Pager.CurPage - 1 })">
+                            <i class="fas fa-angle-double-left" title="Previous"></i>
+                        </a>
+                    </li>
+                }
+
+                @for (var iPage = Model.Pager.StartPage; iPage <= Model.Pager.EndPage; iPage++)
+                {
+                    <li class="page-item @(iPage == Model.Pager.CurPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", "Accomodations", new { sAcom = Model.SrcAcom, iPack=Model.AccPackId, iCurPage = iPage })"> @iPage </a>
+                    </li>
+                }
+
+                @if (Model.Pager.CurPage < Model.Pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Accomodations", new { sAcom = Model.SrcAcom, iPack=Model.AccPackId, iCurPage = Model.Pager.CurPage + 1 })">
+                            @*<span class="sr-only">Next</span>*@
+                            <i class="fas fa-angle-double-right" title="Next"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", "Accomodations", new { sAcom = Model.SrcAcom, iPack=Model.AccPackId, iCurPage = Model.Pager.TotalPages })">Last</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        Sorry! No records exist.
+    </div>
+}

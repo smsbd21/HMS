@@ -1,0 +1,70 @@
+﻿@model HMS.Models.PackageDetailsModel
+@{
+    var oPicture = Model.Accomodation.AccomPictures.FirstOrDefault();
+    var oUrl = oPicture != null ? oPicture.Picture.PicUrl : "default-image.jpg";
+}
+<aside id="colorlib-hero">
+    <div class="flexslider">
+        <ul class="slides">
+            <li style="background-image: url(/images/site/@oUrl);">
+                <div class="overlay"></div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12 col-md-offset-3 slider-text">
+                            <div class="slider-text-inner slider-text-inner2 text-center">
+                                <h2>@Model.Accomodation.AccomodationPackage.AccomodationType.AccType</h2>
+                                <h1>@Model.Accomodation.AccomodationPackage.PackageName</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</aside>
+<div id="colorlib-amenities">
+    <div class="container">
+        <div class="row">
+            <div class="amenities-flex">
+                <div class="desc animate-box">
+                    Accomodation Details :
+                    <p class="price">
+                        <span class="currency">$</span>
+                        <span class="price-room">
+                            @Model.Accomodation.AccomodationPackage.FeePerNight
+                        </span>
+                        <span class="per">/ per night</span>
+                    </p>
+                    <i class="icon-check"></i>
+                    <strong>No. Of Rooms: @Model.Accomodation.AccomodationPackage.NoOfRoom</strong>
+                    <p>
+                        @Model.Accomodation.Description
+                    </p>
+                </div>
+                @if (Model.Accomodation.AccomPictures != null && Model.Accomodation.AccomPictures.Count > 0)
+                {
+                    foreach (var oPic in Model.Accomodation.AccomPictures.Where(x => x.Picture.PicUrl != oUrl))
+                    {
+                        <div class="amenities-img animate-box" style="height:400px; background-image: url(/images/site/@oPic.Picture.PicUrl);"></div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#FromDate').datepicker({
+        format: 'mm/dd/yyyy',
+        startDate: '+3d'
+    });
+
+    $('#btnCheckAvailability').click(function () {
+        $.ajax({
+            url: '@Url.Action("CheckAvailability", "Accomodations")',
+            data: $("#frmConfirmBooking").serialize()
+		})
+		.done(function (resp) {
+			$("#actionModal .modal-dialog").html(resp);
+		});
+    });
+</script>

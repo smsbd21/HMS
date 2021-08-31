@@ -1,0 +1,37 @@
+﻿@model HMS.Areas.Dashboard.Models.AccomodationTypesListingModel
+
+@if (Model != null && Model.AccomodationTypes !=null && Model.AccomodationTypes.Count() > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col" width="160px">Accomod Type</th>
+                <th scope="col" width="720px">Description</th>
+                <th scope="col" width="140px">Action Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var accType in Model.AccomodationTypes)
+            {
+                <tr>
+                    <td style="padding: .02rem .2rem;">@accType.AccType</td>
+                    <td>@accType.Description</td>
+                    <td>
+                        <button data-href="@Url.Action("Action", "AccomodationTypes", new { ID=accType.ID})" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-primary" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-pen mr-1"></i>Edit
+                        </button>
+                        <button data-href="@Url.Action("Delete", "AccomodationTypes", new { ID=accType.ID})" type="button" style="padding: .02rem .2rem .01rem .2rem;" class="btn-data btn btn-danger" data-toggle="modal" data-target="#actionModal">
+                            <i class="fas fa-trash-alt mr-1"></i>Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        Sorry! No records exist.
+    </div>
+}

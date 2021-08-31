@@ -1,0 +1,55 @@
+﻿@model HMS.Areas.Dashboard.Models.AccomodationTypesListingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col col-lg-12">
+        <h3>Accomodation Types</h3>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col col-lg-12">
+        <form id="frmIndex">
+            <div class="input-group">
+                <input type="text" class="form-control" name="strType" value="@Model.SrcType" placeholder="Search Accomodation Types" required />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "AccomodationTypes")">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </a>
+                    <a data-href="@Url.Action("Action", "AccomodationTypes")" class="btn-data btn btn-outline-success" data-toggle="modal" data-target="#actionModal">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-12">
+        @{ Html.RenderPartial("_Listing", Model); }
+        <hr />
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="actionModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+
+<script>
+    $(".btn-data").click(function () {
+        $.ajax({
+            url: $(this).attr("data-href"),
+        }).done(function (resp) {
+            $("#actionModal .modal-dialog").html(resp);
+        });
+    });
+</script>

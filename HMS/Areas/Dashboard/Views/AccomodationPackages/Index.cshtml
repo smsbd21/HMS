@@ -1,0 +1,94 @@
+﻿@model HMS.Areas.Dashboard.Models.AccomodationPackagesListingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col col-lg-12">
+        <h3>Accomodation Packages</h3>
+        @if (Model != null && Model.AccomodationPackages != null && Model.AccomodationPackages.Count() > 0)
+        {
+            if (Model.Pager.CurPage == Model.Pager.EndPage)
+            {
+                <span>
+                    Showing @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @Model.Pager.TotalReco of @Model.Pager.TotalReco entries
+                </span>
+            }
+            else
+            {
+                <span>
+                    Showing  @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @(Model.Pager.RecoSize * Model.Pager.CurPage) of @Model.Pager.TotalReco entries
+                </span>
+            }
+        }
+
+        <label style="float:right;">
+            Show
+            <select id="iRecord" onchange="if (this.value) window.location = 'AccomodationPackages?iReco='+this.value">
+                <option>&nbsp;-&nbsp;</option>
+                <option value="3">03</option>
+                <option value="5">05</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+            Entries
+        </label>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col col-lg-12">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" name="sPack" value="@Model.SrcPack" placeholder="Search Accomodation Packages" />
+                @if (Model.AccomodationTypes != null && Model.AccomodationTypes.Count() > 0)
+                {
+                    <select class="form-control" name="iType">
+                        <option value="0">Select Type</option>
+                        @foreach (var accType in Model.AccomodationTypes)
+                        {
+                            <option value="@accType.ID" @(accType.ID == Model.AccTypeId ? "selected" : string.Empty)>@accType.AccType</option>
+                        }
+                    </select>
+                }
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a href="@Url.Action("Index", "AccomodationPackages")" class="btn btn-outline-secondary">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </a>
+                    <a data-href="@Url.Action("Action", "AccomodationPackages")" class="btn-data btn btn-outline-success" data-toggle="modal" data-target="#actionModal">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-12">
+        @{ Html.RenderPartial("_Listing", Model); }
+        <hr />
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="actionModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+
+<script>
+    $(".btn-data").click(function () {
+        $.ajax({
+            url: $(this).attr("data-href"),
+        }).done(function (resp) {
+            $("#actionModal .modal-dialog").html(resp);
+        });
+    });
+</script>
+

@@ -1,0 +1,71 @@
+﻿@model HMS.Areas.Dashboard.Models.RolesListingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col col-lg-12">
+        <h3>User Roles</h3>
+        @if (Model != null && Model.Roles != null && Model.Roles.Count() > 0)
+        {
+            if (Model.Pager.CurPage == Model.Pager.EndPage)
+            {
+                <span>
+                    Showing @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @Model.Pager.TotalReco of @Model.Pager.TotalReco entries
+                </span>
+            }
+            else
+            {
+                <span>
+                    Showing  @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @(Model.Pager.RecoSize * Model.Pager.CurPage) of @Model.Pager.TotalReco entries
+                </span>
+            }
+        }
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col col-lg-12">
+        <form>
+            <div class="input-group">
+                <input type="text" name="sRole" class="form-control" placeholder="Search Roles" value="@Model.SrcRole">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Roles")">
+                        <i class="fas fa-redo-alt mr-2"></i>Reset
+                    </a>
+                    <button data-href="@Url.Action("Action", "Roles")" class="btn-data btn btn-outline-success" type="button" data-toggle="modal" data-target="#actionModal">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-12">
+        @{
+            Html.RenderPartial("_Listing", Model);
+        }
+    </div>
+</div>
+
+<!-- Action Modal -->
+<div id="actionModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+<!-- Action Script -->
+<script>
+    $(".btn-data").click(function () {
+        $.ajax({
+            url: $(this).attr("data-href"),
+        }).done(function (resp) {
+            $("#actionModal .modal-dialog").html(resp);
+        });
+    });
+</script>

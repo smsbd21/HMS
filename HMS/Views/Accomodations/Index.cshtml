@@ -1,0 +1,89 @@
+﻿@model HMS.Models.AccomodationsViewModel
+
+@if (Model != null && Model.AccomodationPackages != null && Model.AccomodationPackages.Count() > 0)
+{
+    var oPicture = Model.AccomodationPackages.FirstOrDefault().PackagePictures.FirstOrDefault();
+    var oUrl = oPicture != null ? oPicture.Picture.PicUrl : "default-image.jpg";
+
+    <aside id="colorlib-hero">
+        <div class="flexslider">
+            <ul class="slides">
+                <li style="background-image: url(/images/site/@oUrl);">
+                    <div class="overlay"></div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12 col-md-offset-3 slider-text">
+                                <div class="slider-text-inner slider-text-inner2 text-center">
+                                    <h2>Choose our Best</h2>
+                                    <h1>Rooms &amp; Suites</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    
+    <div id="colorlib-rooms" class="colorlib-light-grey">
+        <div class="container">
+            <div class="row">
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Select Accomodation Package
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        @foreach (var oPack in Model.AccomodationPackages)
+                        {
+                            <li class="@( oPack.ID == Model.PackId ? "active" : string.Empty)">
+                                <a href="@Url.Action("Index", "Accomodations", new { area = "" , iType = Model.AccomodationType.ID, iPack = oPack.ID })">
+                                    @oPack.PackageName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                @if (Model.Accomodations != null && Model.Accomodations.Count() > 0)
+                {
+                    foreach (var oAcom in Model.Accomodations)
+                    {
+                        var oAcoPic = oAcom.AccomPictures.FirstOrDefault();
+                        var oAcoUrl = oAcoPic != null ? oAcoPic.Picture.PicUrl : "default-image.jpg";
+
+                        <div class="col-md-4 room-wrap animate-box">
+                            <a href="@Url.Action("Details", "Accomodations", new { iAcom = oAcom.ID })" class="room" style="background-image: url(/images/site/@oAcoUrl);"></a>
+                            <div class="desc text-center">
+                                <h3>
+                                    <a href="rooms-suites.html">
+                                        @oAcom.AccName
+                                    </a>
+                                </h3>
+                                <p class="price">
+                                    <span class="currency">$</span>
+                                    <span class="price-room">@oAcom.AccomodationPackage.FeePerNight</span>
+                                    <span class="per">/ per night</span>
+                                </p>
+                                <ul>
+                                    <li>
+                                        <i class="icon-check"></i>
+                                        No. Of Rooms: @oAcom.AccomodationPackage.NoOfRoom
+                                    </li>
+                                </ul>
+                                <a href="@Url.Action("Details", "Accomodations", new { iAcom = oAcom.ID })" class="btn btn-primary btn-book">
+                                    <i class="icon-check"></i> Book now!
+                                </a>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        No Accomodation found.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

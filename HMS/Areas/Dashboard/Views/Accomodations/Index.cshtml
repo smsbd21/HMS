@@ -1,0 +1,150 @@
+﻿@model HMS.Areas.Dashboard.Models.AccomodationsListingModel
+
+@{
+    ViewBag.Title = "Index";
+}
+@*<script>
+    function val() {
+        //d = document.getElementById("iRecord").value;
+        //alert(d);
+        document.getElementById('iRecord').addEventListener('change', function () {
+            window.location.href = "@Url.Action("Action", "Accomodations",new { iReco = this.value })";
+        });
+    }
+</script>*@
+
+<div class="row">
+    <div class="col col-lg-12">
+        <h3>Accomodations</h3>
+
+        @if (Model != null && Model.Accomodations != null && Model.Accomodations.Count() > 0)
+        {
+            if (Model.Pager.CurPage == Model.Pager.EndPage)
+            {
+                <span>
+                    Showing @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @Model.Pager.TotalReco of @Model.Pager.TotalReco entries
+                </span>
+            }
+            else
+            {
+                <span>
+                    Showing  @(Model.Pager.RecoSize * (Model.Pager.CurPage - 1) + 1) to @(Model.Pager.RecoSize * Model.Pager.CurPage) of @Model.Pager.TotalReco entries
+                </span>
+            }
+        }
+                <label style="float:right;">
+                    Show
+                    <select id="iRecord" name="iRecord">
+                        <option value="">&nbsp;-&nbsp;</option>
+                        <option value="3">03</option>
+                        <option value="5">05</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+
+                    @*<select id="iRecord" onchange="if (this.value) window.location=this.value">
+        <select onchange="this.value & if (this.value) window.location.href = this.value">
+        <option value="http://localhost:3270/Dashboard/Accomodations?iReco =10">10</option>
+        <select id="urlSelect" onchange="window.location = jQuery('#urlSelect option:selected').val();">
+        <select id="iRecord" name="iRecord" onchange="window.location = 'Accomodations?iReco='+this.value">
+        <select onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+        <select id="iRecord" name="iRecord" onchange="window.location = 'Accomodations?iReco='+jQuery('#iRecord option:selected').val();">
+        <select id="iRecord" onchange="if (this.value) window.location = 'Accomodations?iReco='+this.value">
+            <option value="Accomodations" selected>&nbsp;-&nbsp;</option>
+            <option value="Accomodations?iReco=1">1</option>
+            <option value="Accomodations?iReco=2">2</option>
+            <option value="Accomodations?iReco=3">3</option>
+            <option value="Accomodations?iReco=5">5</option>
+            <option value="Accomodations?iReco=10">10</option>
+            <option value="Accomodations?iReco=15">15</option>
+            <option value="Accomodations?iReco=20">20</option>
+            <option value="Accomodations?iReco=25">25</option>
+        </select>*@
+                    Entries
+                </label>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col col-lg-12">
+        <form>
+            <div class="input-group">
+                <input type="text" class="form-control" name="sAcom" value="@Model.SrcAcom" placeholder="Search Accomodations" />
+                @if (Model.Accomodations != null && Model.Accomodations.Count() > 0)
+                {
+                    <select class="form-control" name="iPack">
+                        <option value="0">Select Package</option>
+                        @foreach (var oPack in Model.AccomodationPackages)
+                        {
+                            <option value="@oPack.ID" @(oPack.ID == Model.AccPackId ? "selected" : string.Empty)>@oPack.PackageName</option>
+                        }
+                    </select>
+                }
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                    <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Accomodations")">
+                        <i class="fas fa-redo mr-2"></i>Reset
+                    </a>
+                    <a data-href="@Url.Action("Action", "Accomodations")" class="btn-data btn btn-outline-success" data-toggle="modal" data-target="#actionModal">
+                        <i class="fas fa-plus mr-2"></i>Create
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-lg-12">
+        @{ Html.RenderPartial("_Listing", Model); }
+        <hr />
+    </div>
+</div>
+
+<!-- Action Modal -->
+<div id="actionModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+<!-- Action Script -->
+<script>
+    $(".btn-data").click(function () {
+        $.ajax({
+            url: $(this).attr("data-href"),
+        }).done(function (resp) {
+            $("#actionModal .modal-dialog").html(resp);
+        });
+    });
+    //$("iRecord").on('change',(function () {
+    //    //var str = "";
+    //    $("select option:selected").each(function () {
+    //        location.href = "Accomodations?iReco=" + $(this).text();
+    //    });
+    //    //$("div .sweets").text(str);
+    //}));
+
+    //window.onload = function () {
+    //    location.href = "Accomodations?iReco=" + document.getElementById("iRecord").value;
+    //} 
+    //jQuery(function () {
+    //    // remove the below comment in case you need chnage on document ready
+    //    // location.href=jQuery("#selectbox").val(); 
+    //    jQuery("#iRecord2").change(function () {
+    //        location.href = "Accomodations?iReco=" + jQuery(this).val();
+    //    })
+    //})
+    $(function () {
+        // bind change event to select
+        $('#iRecord').on('change', function () {
+            var url = $(this).val(); // get selected value
+            if (url) { // require a URL
+                window.location = "Accomodations?iReco=" + url; // redirect
+                //$('#iRecord').val(url).change(); // set selected value
+            }
+            return false;
+        });
+    });
+</script>
